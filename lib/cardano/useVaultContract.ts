@@ -132,6 +132,17 @@ export function useVaultContract() {
     }
   }
 
+  // READ: Get live exchange rate from Keeper API
+  async function getExchangeRate(): Promise<number> {
+    try {
+      const res = await fetch("/api/keeper")
+      const data = await res.json()
+      return data.exchangeRate || 1.0
+    } catch {
+      return 1.0
+    }
+  }
+
   const statusLabel = {
     idle: "",
     building: "BUILDING_TX...",
@@ -146,6 +157,7 @@ export function useVaultContract() {
     withdraw,
     getVaultTVL,
     getUserVtokenBalance,
+    getExchangeRate,
     txStatus,
     setTxStatus,
     txHash,

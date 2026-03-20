@@ -48,12 +48,14 @@ export default function VaultsPage() {
         setTxStatus,
         txHash, 
         error, 
-        statusLabel 
+        statusLabel,
+        getExchangeRate
     } = useVaultContract()
     
     // On-chain state
     const [vaultTVL, setVaultTVL] = useState<number | null>(null)
     const [userVtokenBalance, setUserVtokenBalance] = useState<number>(0)
+    const [exchangeRate, setExchangeRate] = useState<number>(1.0)
     const [isContractLoading, setIsContractLoading] = useState(true)
 
     // Modal States
@@ -64,7 +66,9 @@ export default function VaultsPage() {
     const refreshOnChainData = async () => {
         setIsContractLoading(true)
         const tvl = await getVaultTVL()
+        const rate = await getExchangeRate()
         setVaultTVL(tvl)
+        setExchangeRate(rate)
         if (connected && address) {
             const vBalance = await getUserVtokenBalance(address)
             setUserVtokenBalance(vBalance)
@@ -234,6 +238,16 @@ export default function VaultsPage() {
                             {/* Metrics */}
                             <div className="grid grid-cols-1 gap-4">
                                 <div className="flex flex-col relative">
+                                    <span className="text-[8px] text-white/30 uppercase tracking-widest mb-1">Exchange_Rate</span>
+                                    {isContractLoading ? (
+                                        <Skeleton className="h-4 w-32 bg-white/5" />
+                                    ) : (
+                                        <span className="text-xs font-bold text-primary tracking-widest">
+                                            1 vUSDCx = {exchangeRate.toFixed(6)} ADA
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex flex-col relative border-t border-white/5 pt-3">
                                     <span className="text-[8px] text-white/30 uppercase tracking-widest mb-1">Total_TVL</span>
                                     {isMinswapLoading ? (
                                         <Skeleton className="h-4 w-16 bg-white/5" />
@@ -316,7 +330,7 @@ export default function VaultsPage() {
                                     <div className="grid grid-cols-1 gap-1 text-[11px] font-bold uppercase tracking-widest">
                                         <div className="flex justify-between py-1 px-4 bg-white/5 border-l-2 border-primary">
                                             <span className="text-white/40">Exchange Rate:</span>
-                                            <span className="text-white">1 vUSDCx = 1.000000 ADA</span>
+                                            <span className="text-white">1 vUSDCx = {exchangeRate.toFixed(6)} ADA</span>
                                         </div>
                                         <div className="flex justify-between py-1 px-4 bg-white/5 border-l-2 border-primary">
                                             <span className="text-white/40">Your Balance:</span>
@@ -361,7 +375,13 @@ export default function VaultsPage() {
                                         </div>
                                         <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest">
                                             <span className="text-white/40">YOU RECEIVE:</span>
-                                            <span className="text-primary">{parseFloat(amount || "0").toFixed(6)} {activeModal === "DEPOSIT" ? "vUSDCx" : "ADA"}</span>
+                                            <span className="text-primary">
+                                                {activeModal === "DEPOSIT"
+                                                    ? (parseFloat(amount || "0") / exchangeRate).toFixed(6)
+                                                    : (parseFloat(amount || "0") * exchangeRate).toFixed(6)}
+                                                {" "}
+                                                {activeModal === "DEPOSIT" ? "vUSDCx" : "ADA"}
+                                            </span>
                                         </div>
                                         {activeModal === "DEPOSIT" && (
                                             <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest border-t border-white/10 pt-3 mt-1">
