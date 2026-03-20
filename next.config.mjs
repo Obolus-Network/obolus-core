@@ -47,6 +47,18 @@ const nextConfig = {
   },
 
   serverExternalPackages: ['@meshsdk/core'],
+  async rewrites() {
+    return [
+      {
+        source: '/api/minswap/:path*',
+        destination: 'https://api-mainnet-prod.minswap.org/:path*',
+      },
+      {
+        source: '/api/minswap-agg/:path*',
+        destination: 'https://agg-api.minswap.org/aggregator/:path*',
+      },
+    ]
+  },
 }
 
 export default nextConfig

@@ -18,6 +18,7 @@
     "@ledgerhq/crypto-icons": "^1.4.0",
     "@meshsdk/core": "^1.9.0-beta.101",
     "@meshsdk/react": "^2.0.0-beta.2",
+    "@minswap/aggregator-widget": "^1.0.13",
     "@morpho-org/blue-api-sdk": "^2.17.3",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",

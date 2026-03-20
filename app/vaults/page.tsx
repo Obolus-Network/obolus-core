@@ -16,76 +16,31 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
+import { useVaultData } from "@/lib/minswap/useVaultData"
 import { toast } from "react-toastify"
 
-const VAULTS = [
-    {
-        id: "v1",
-        name: "USDCx/ADA",
-        platform: "MINSWAP",
-        type: "LP VAULT",
-        category: "STABLECOIN",
-        apy: "12.40%",
-        daily: "0.034%",
-        description: "USDC-ADA liquidity pool. Auto-compounds MIN rewards.",
-        risk: "LOW",
-        chain: "CARDANO",
-        color: "blue"
-    },
-    {
-        id: "v2",
-        name: "USDCx LENDING",
-        platform: "LIQWID",
-        type: "LENDING",
-        category: "STABLECOIN",
-        apy: "8.20%",
-        daily: "0.022%",
-        description: "Supply USDCx to Liqwid lending market. Earn borrower interest.",
-        risk: "LOW",
-        chain: "CARDANO",
-        color: "green"
-    },
-    {
-        id: "v3",
-        name: "USDCx/USDM",
-        platform: "SPLASH",
-        type: "STABLE LP",
-        category: "STABLECOIN",
-        apy: "9.80%",
-        daily: "0.027%",
-        description: "Stablecoin LP. Minimal impermanent loss. Auto-compounds.",
-        risk: "VERY LOW",
-        chain: "CARDANO",
-        color: "purple"
-    },
-    {
-        id: "v4",
-        name: "ADA STAKING",
-        platform: "CARDANO",
-        type: "SINGLE ASSET",
-        category: "BLUE_CHIP",
-        apy: "3.80%",
-        daily: "0.010%",
-        description: "Native ADA staking yield. No impermanent loss.",
-        risk: "VERY LOW",
-        chain: "CARDANO",
-        color: "orange"
-    }
-]
+/**
+ * Format large USD values
+ */
+function formatUSD(value: number): string {
+    if (value === 0) return "$—"
+    if (value >= 1_000_000) return `$${(value / 1_000_000).toFixed(2)}M`
+    if (value >= 1_000) return `$${(value / 1_000).toFixed(1)}K`
+    return `$${value.toLocaleString()}`
+}
 
 export default function VaultsPage() {
     const [filter, setFilter] = useState("ALL_VAULTS")
-    const { connected, connect } = useObolusWallet()
+    const { connected } = useObolusWallet()
+    const { vaults, totalTVL, avgAPY, isLoading, lastUpdated } = useVaultData()
 
     const filteredVaults = filter === "ALL_VAULTS"
-        ? VAULTS
-        : VAULTS.filter(v => v.category === filter || v.type.includes(filter.replace("_VAULTS", "")))
+        ? vaults
+        : vaults.filter(v => v.category === filter || v.type.includes(filter.replace("_VAULTS", "")))
 
     const handleAction = (type: string) => {
         if (!connected) {
             toast.info("Please connect your wallet first.")
-            // Since our ConnectWalletButton handles the dropdown, 
-            // in a real app we might trigger a specific modal here.
             return
         }
         toast.success(`COMING_SOON // ${type} integration in progress`)
@@ -105,29 +60,39 @@ export default function VaultsPage() {
                 <div className="bg-white/5 px-4 py-2 border-b border-white/10 flex justify-between items-center text-white">
                     <span className="text-[10px] text-white/40 uppercase tracking-widest">Protocol_Metrics</span>
                     <span className="text-primary text-[10px] flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                        SYSTEM_READY
+                        <span className={`w-1.5 h-1.5 bg-primary rounded-full ${isLoading ? "animate-pulse" : ""}`} />
+                        {isLoading ? "SYNCING..." : "SYSTEM_READY"}
                     </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-white/10 text-white">
                     <div className="p-4 sm:p-6 flex flex-col gap-1">
                         <span className="text-[10px] text-white/40 tracking-wider uppercase">Total_Vault_TVL</span>
                         <div className="flex items-center gap-2">
-                            <span className="text-white text-2xl font-bold tracking-tighter">$0</span>
-                            <Badge variant="outline" className="bg-primary/10 text-primary text-[8px] border-primary/20">SYNCED</Badge>
+                            {isLoading ? (
+                                <Skeleton className="h-8 w-24 bg-white/5" />
+                            ) : (
+                                <span className="text-white text-2xl font-bold tracking-tighter">{formatUSD(totalTVL)}</span>
+                            )}
+                            <Badge variant="outline" className={`text-[8px] ${isLoading ? "bg-white/5 text-white/20 border-white/10" : "bg-primary/10 text-primary border-primary/20"}`}>
+                                {isLoading ? "SYNCING" : "LIVE"}
+                            </Badge>
                         </div>
                     </div>
                     <div className="p-4 sm:p-6 flex flex-col gap-1">
                         <span className="text-[10px] text-white/40 tracking-wider uppercase">Average_Vault_APY</span>
                         <div className="flex items-center gap-2">
-                            <span className="text-white text-2xl font-bold tracking-tighter">0.00%</span>
+                            {isLoading ? (
+                                <Skeleton className="h-8 w-24 bg-white/5" />
+                            ) : (
+                                <span className="text-white text-2xl font-bold tracking-tighter">{avgAPY.toFixed(2)}%</span>
+                            )}
                             <Badge variant="outline" className="bg-blue-500/10 text-blue-400 text-[8px] border-blue-500/20">STABLE</Badge>
                         </div>
                     </div>
                     <div className="p-4 sm:p-6 flex flex-col gap-1">
                         <span className="text-[10px] text-white/40 tracking-wider uppercase">Active_Vaults</span>
                         <div className="flex items-center gap-2">
-                            <span className="text-white text-2xl font-bold tracking-tighter">4</span>
+                            <span className="text-white text-2xl font-bold tracking-tighter">{vaults.length}</span>
                             <Badge variant="outline" className="bg-green-500/10 text-green-400 text-[8px] border-green-500/20">LIVE</Badge>
                         </div>
                     </div>
@@ -161,7 +126,7 @@ export default function VaultsPage() {
             {/* Vault Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {filteredVaults.map((vault) => (
-                    <div key={vault.id} className="glass-card rounded-lg border border-white/10 overflow-hidden flex flex-col hover:border-primary/30 transition-all group">
+                    <div key={vault.vaultId} className="glass-card rounded-lg border border-white/10 overflow-hidden flex flex-col hover:border-primary/30 transition-all group">
                         <div className="p-6 flex flex-col gap-6">
                             {/* Card Top */}
                             <div className="flex justify-between items-start">
@@ -182,19 +147,41 @@ export default function VaultsPage() {
 
                             {/* APY Section */}
                             <div className="flex flex-col gap-1 bg-white/5 p-4 rounded-sm border border-white/5 group-hover:border-primary/20 transition-all">
-                                <span className="text-[8px] text-white/40 uppercase tracking-widest">Expected_APY</span>
+                                <span className="text-[8px] text-white/40 uppercase tracking-widest">
+                                    {vault.dataSource === "live" ? "Live_Yield_APR" : "Expected_APY"}
+                                </span>
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-primary text-3xl font-black tracking-tighter">{vault.apy}</span>
+                                    {isLoading ? (
+                                        <Skeleton className="h-10 w-24 bg-white/5" />
+                                    ) : (
+                                        <>
+                                            <span className={`text-3xl font-black tracking-tighter ${vault.dataSource === "live" ? "text-primary" : "text-amber-400"}`}>
+                                                {(vault.liveAPY || vault.targetAPY).toFixed(2)}%
+                                            </span>
+                                            {vault.dataSource !== "live" && (
+                                                <span className="text-[8px] text-amber-500/60 font-black border border-amber-500/20 px-1 rounded-sm">EST</span>
+                                            )}
+                                        </>
+                                    )}
                                     <TrendingUp className="size-4 text-primary opacity-50" />
                                 </div>
-                                <span className="text-[9px] text-white/20 uppercase tracking-tighter">Daily: {vault.daily}</span>
+                                <span className="text-[9px] text-white/20 uppercase tracking-tighter">
+                                    Daily: {((vault.liveAPY || vault.targetAPY) / 365).toFixed(3)}%
+                                </span>
                             </div>
 
                             {/* Metrics */}
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col">
                                     <span className="text-[8px] text-white/30 uppercase tracking-widest mb-1">Total_TVL</span>
-                                    <span className="text-xs font-bold text-white/80">$0</span>
+                                    {isLoading ? (
+                                        <Skeleton className="h-4 w-16 bg-white/5" />
+                                    ) : (
+                                        <span className="text-xs font-bold text-white/80">{formatUSD(vault.liveTVL || 0)}</span>
+                                    )}
+                                    {vault.volume24h !== undefined && vault.volume24h > 0 && (
+                                        <span className="text-[7px] text-white/20 uppercase mt-1">VOL_24H: {formatUSD(vault.volume24h)}</span>
+                                    )}
                                 </div>
                                 <div className="flex flex-col text-right">
                                     <span className="text-[8px] text-white/30 uppercase tracking-widest mb-1">Your_Deposit</span>
@@ -255,7 +242,7 @@ export default function VaultsPage() {
                     <div className="flex items-center gap-4">
                         <span className="text-primary/60 flex items-center gap-1.5">
                             <span className="size-1.5 bg-primary rounded-full animate-pulse" />
-                            MASTER_NODE_OK
+                            DATA_SYNC: {lastUpdated ? lastUpdated.toLocaleTimeString() : "PENDING"} // SOURCE: MINSWAP_API
                         </span>
                         <span>SYSTEM_LATENCY: 14ms</span>
                         <span>ENGINE_STATUS: STABLE</span>
