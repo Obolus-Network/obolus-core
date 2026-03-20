@@ -57,6 +57,10 @@ const nextConfig = {
         source: '/api/minswap-agg/:path*',
         destination: 'https://agg-api.minswap.org/aggregator/:path*',
       },
+      {
+        source: '/api/blockfrost/:path*',
+        destination: 'https://cardano-preprod.blockfrost.io/api/v0/:path*',
+      },
     ]
   },
 }
