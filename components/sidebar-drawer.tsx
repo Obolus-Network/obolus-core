@@ -45,7 +45,7 @@ export function SidebarDrawer({ open, onOpenChange }: { open?: boolean; onOpenCh
         <SheetHeader className="p-6 pb-2">
           <SheetTitle className="sr-only">Menu</SheetTitle>
           <div className="flex items-center gap-2">
-            <NextImage src="/logo.png" alt="Logo" width={120} height={32} className="h-8 w-auto text-primary" />
+            <span className="text-xl font-black tracking-tighter text-primary italic">OBOLUS//</span>
           </div>
         </SheetHeader>
 
@@ -60,8 +60,8 @@ export function SidebarDrawer({ open, onOpenChange }: { open?: boolean; onOpenCh
                 className={cn(
                   "relative flex items-center gap-3 px-6 py-4 text-[11px] font-bold tracking-widest transition-all group",
                   isActive
-                    ? "bg-primary/5 text-primary border-r-2 border-primary"
-                    : "text-white/40 hover:text-white hover:bg-white/5"
+                    ? "bg-primary/10 text-primary border-r-2 border-primary shadow-[inset_0_0_15px_rgba(166,242,74,0.05)]"
+                    : "text-white/40 hover:text-primary/70 hover:bg-primary/5 hover:text-white"
                 )}
               >
                 <item.icon className={cn("size-4", isActive ? "text-primary" : "text-white/40 group-hover:text-white")} />
@@ -83,8 +83,8 @@ export function SidebarDrawer({ open, onOpenChange }: { open?: boolean; onOpenCh
           {authenticated && address && (
             <div className="bg-white/5 border border-white/10 rounded-lg p-3 flex items-center justify-between group">
               <div className="flex items-center gap-3">
-                <div className="size-8 rounded bg-primary/10 border border-primary/20 flex items-center justify-center">
-                  <User className="size-4 text-primary" />
+                <div className="size-8 rounded bg-primary border border-primary/20 flex items-center justify-center">
+                  <User className="size-4 text-black" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-[10px] font-bold text-white tracking-tight">{shortAddress(address)}</span>

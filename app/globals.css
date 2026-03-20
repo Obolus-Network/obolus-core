@@ -366,7 +366,6 @@
   background: radial-gradient(circle, #A6F24A 0%, transparent 70%);
   filter: blur(40px);
 }
-
 .marquee-container {
   overflow: hidden;
   white-space: nowrap;
@@ -374,15 +373,41 @@
 
 .marquee-content {
   display: inline-block;
-  animation: marquee 30s linear infinite;
+  animation: obolus-marquee 30s linear infinite;
 }
 
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
-  }
+@keyframes obolus-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
-  100% {
-    transform: translateX(-50%);
-  }
+/* Mesh Wallet Overrides - Force Black on Lime */
+.mesh-wallet-wrapper .mesh-button,
+.landing-wallet-wrapper .mesh-button {
+  background-color: var(--primary) !important;
+  color: #000000 !important;
+  border-radius: 9999px !important;
+  font-family: inherit !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  font-size: 10px !important;
+  border: none !important;
+  box-shadow: 0 0 20px rgba(166, 242, 74, 0.3) !important;
+}
+
+.mesh-wallet-wrapper .mesh-button *,
+.landing-wallet-wrapper .mesh-button * {
+  color: #000000 !important;
+}
+
+.mesh-wallet-wrapper .mesh-dropdown {
+  background-color: #0a0f18 !important;
+  border: 1px solid rgba(166, 242, 74, 0.2) !important;
+  backdrop-filter: blur(16px) !important;
+  border-radius: 12px !important;
+}
+
+/* Active Nav Header Fix */
+header nav a.bg-primary {
+  color: #000000 !important;
 }

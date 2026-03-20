@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
+import "@meshsdk/react/styles.css" // Moved Mesh CSS import to the top
 import "./globals.css"
 import { AppHeader } from "@/components/header"
 import { AppFooter } from "@/components/footer"

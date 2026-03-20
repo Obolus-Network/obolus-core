@@ -1,7 +1,7 @@
 import { useWallet, useAddress, useLovelace, useNetwork } from "@meshsdk/react";
 
 export function useObolusWallet() {
-  const { connected, connecting, connect, disconnect } = useWallet();
+  const { connected, connecting, connect, disconnect, name: walletName } = useWallet();
   const address = useAddress();
   const lovelace = useLovelace();
   const networkId = useNetwork();
