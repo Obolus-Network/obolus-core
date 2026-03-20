@@ -1,0 +1,11 @@
+{
+  "vUSDCx": {
+    "policyId": "540321fe0b02a776e0ea96413d2dba6368b7709c03de9b1f7cbe8e69",
+    "tokenName": "vUSDCx",
+    "tokenNameHex": "765553444378",
+    "assetId": "540321fe0b02a776e0ea96413d2dba6368b7709c03de9b1f7cbe8e69765553444378",
+    "decimals": 6,
+    "mintTxHash": "79fd6cfc56a809f516982a2be1f857ee0d8a3e2527ca24018b7ee604828d89db",
+    "network": "preprod"
+  }
+}
