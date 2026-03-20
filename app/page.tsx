@@ -13,14 +13,13 @@ import {
 } from "lucide-react"
 
 import { LandingPage } from "@/components/landing-page"
-import { usePrivy } from "@privy-io/react-auth"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 import { useObolus } from "@/hooks/use-obolus"
 import { useState, useEffect } from "react"
 import { formatDistanceToNow } from "date-fns"
 
 export default function Page() {
-  const { authenticated, user } = usePrivy()
-  const address = user?.wallet?.address
+  const { connected: authenticated, address } = useObolusWallet()
 
   const { getCreditLimit, getLoans, loading: obolusLoading } = useObolus()
   const transactions = useQuery(api.merchants.listTransactions, { userAddress: address }) ?? []

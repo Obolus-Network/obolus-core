@@ -2,21 +2,11 @@
 
 import type React from "react"
 import { ConnectWalletButton } from "@/components/wallet/connect-wallet-button"
-import { usePrivy } from "@privy-io/react-auth"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 
 export function ConnectGate({ children }: { children: React.ReactNode }) {
-  const { authenticated, ready } = usePrivy()
+  const { connected: authenticated } = useObolusWallet()
 
-  if (!ready) {
-    return (
-      <div className="min-h-[70dvh] flex flex-col items-center justify-center text-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="size-12 rounded-full border-t-2 border-primary animate-spin" />
-          <span className="text-[10px] text-primary uppercase font-bold tracking-[0.3em] animate-pulse">Establishing_Secure_Link...</span>
-        </div>
-      </div>
-    )
-  }
 
   if (!authenticated) {
     return (

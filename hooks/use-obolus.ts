@@ -1,15 +1,39 @@
 import { useState, useCallback, useEffect } from 'react';
 import { ethers, BrowserProvider, JsonRpcProvider, Contract, parseUnits, formatUnits } from 'ethers';
-import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 import { CONTRACTS, ABIS, NETWORKS } from '@/lib/contracts';
 
 export function useObolus() {
-    const { authenticated } = usePrivy();
-    const { wallets } = useWallets();
-    const wallet = wallets[0];
+    const { connected: authenticated, address: walletAddress, networkId: walletNetworkId } = useObolusWallet();
 
     const [loading, setLoading] = useState(false);
     const [txHash, setTxHash] = useState<string | null>(null);
+
+    // Mock wallet for compatibility with existing EVM logic.
+    // Since this is Cardano native, but the backend/smart contracts are EVM (Creditcoin Hub),
+    // we use window.ethereum as the fallback signer for EVM interactions.
+    const wallet = {
+        address: walletAddress,
+        chainId: walletNetworkId?.toString() || '0',
+        switchChain: async (id: number) => {
+            if (typeof window !== 'undefined' && (window as any).ethereum) {
+                try {
+                    await (window as any).ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: `0x${id.toString(16)}` }],
+                    });
+                } catch (e) {
+                    console.error("Failed to switch EVM chain", e);
+                }
+            }
+        },
+        getEthereumProvider: async () => {
+            if (typeof window !== 'undefined' && (window as any).ethereum) {
+                return (window as any).ethereum;
+            }
+            throw new Error("EVM Provider (Metamask) not found");
+        }
+    };
 
     const getSpokeConfig = useCallback((networkId: number) => {
         if (networkId === NETWORKS.SEPOLIA.id) return CONTRACTS.SPOKES.SEPOLIA;
@@ -38,7 +62,7 @@ export function useObolus() {
         const actualAbi = abi.abi || abi;
 
         if (useSigner) {
-            if (!wallet) throw new Error("Wallet not connected");
+            if (!wallet.address) throw new Error("Wallet not connected");
 
             const chainIdPart = wallet.chainId.includes(':') ? wallet.chainId.split(':')[1] : wallet.chainId;
             const currentChainId = parseInt(chainIdPart);

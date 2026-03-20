@@ -8,8 +8,6 @@ import { AppHeader } from "@/components/header"
 import { AppFooter } from "@/components/footer"
 import { Providers } from "@/components/providers"
 import { Suspense } from "react"
-import { MeshProvider } from "@meshsdk/react"
-import "@meshsdk/react/styles.css"
 
 export const viewport = {
   width: "device-width",
@@ -17,9 +15,9 @@ export const viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Obolus - Crypto PayLater | Buy Now Pay Later with Cryptocurrency | Algorand DeFi",
-  description: "Obolus revolutionizes crypto payments with instant buy now pay later (BNPL) solutions on Algorand blockchain. Secure, fast, and decentralized crypto lending platform for digital payments.",
-  keywords: "crypto paylater, buy now pay later crypto, algorand defi, cryptocurrency lending, crypto BNPL, blockchain payments, decentralized finance, crypto loans, digital wallet, algorand dapp",
+  title: "Obolus - Crypto PayLater | Buy Now Pay Later with Cryptocurrency | Cardano DeFi",
+  description: "Obolus revolutionizes crypto payments with instant buy now pay later (BNPL) solutions on Cardano. Secure, fast, and decentralized crypto lending platform for digital payments.",
+  keywords: "crypto paylater, buy now pay later crypto, cardano defi, cryptocurrency lending, crypto BNPL, blockchain payments, decentralized finance, crypto loans, digital wallet, cardano dapp",
   authors: [{ name: "Obolus Team" }],
   creator: "Obolus",
   publisher: "Obolus",
@@ -33,7 +31,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://pay-ease-ruby.vercel.app",
     title: "Obolus - Revolutionary Crypto PayLater Platform",
-    description: "Experience the future of crypto payments with Obolus. Instant buy now pay later solutions on Algorand blockchain with zero collateral requirements.",
+    description: "Experience the future of crypto payments with Obolus. Instant buy now pay later solutions on Cardano with zero collateral requirements.",
     siteName: "Obolus",
     images: [
       {
@@ -47,7 +45,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Obolus - Crypto PayLater Revolution",
-    description: "Buy now, pay later with cryptocurrency. Secure Algorand-based DeFi lending platform.",
+    description: "Buy now, pay later with cryptocurrency. Secure Cardano-based DeFi lending platform.",
     images: ["/logo.png"],
   },
   alternates: {
@@ -71,13 +69,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`font-mono ${GeistSans.variable} ${GeistMono.variable} antialiased min-h-dvh bg-background`}>
         <Suspense fallback={<div>Loading...</div>}>
           <Providers>
-            <MeshProvider>
-              <div className="mx-auto w-full flex flex-col min-h-screen px-4 md:px-8 lg:px-12">
-                <AppHeader />
-                <main className="pb-24 flex-grow">{children}</main>
-                <AppFooter />
-              </div>
-            </MeshProvider>
+            <div className="flex flex-col min-h-screen w-full">
+              <AppHeader />
+              <main className="flex-grow mx-auto w-full max-w-[1400px] px-6 lg:px-12">
+                {children}
+              </main>
+              <AppFooter />
+            </div>
           </Providers>
         </Suspense>
         <Analytics />

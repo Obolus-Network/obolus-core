@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { ethers } from "ethers"
 import { useObolus } from "@/hooks/use-obolus"
-import { usePrivy, useWallets } from "@privy-io/react-auth"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 import { ShieldCheck, Zap, AlertCircle, CheckCircle2, Loader2, ArrowLeft } from "lucide-react"
 import { toast } from "react-toastify"
 import Link from "next/link"
@@ -22,8 +22,7 @@ export default function CheckoutPage() {
         payWithCredit,
         loading: obolusLoading
     } = useObolus()
-    const { login } = usePrivy()
-    const { wallets } = useWallets()
+    const { connect } = useObolusWallet()
 
     const [bill, setBill] = useState<any>(null)
     const [fetching, setFetching] = useState(true)
@@ -78,9 +77,11 @@ export default function CheckoutPage() {
         try {
             const { config } = getMasterConfig() as any;
             const usdcAddress = config.USDC;
-            const wallet = wallets[0];
 
-            if (!wallet) throw new Error("Wallet not available for signing");
+            // In Cardano Native project, the original EVM wallet logic might need 
+            // a different implementation. For now, we'll try to use window.ethereum 
+            // if available, as a fallback for the EVM settlement part.
+            if (!(window as any).ethereum) throw new Error("EVM wallet (like Metamask) required for settlement layer.");
 
             // 1. CREDIT_AUTHORIZATION (BNPL)
             // This records the debt on the Hub
@@ -89,8 +90,7 @@ export default function CheckoutPage() {
             console.log("[OBOLUS] Credit Authorized:", routerReceipt.hash);
 
             // 2. PROTOCOL_SETTLEMENT (Simulating payout from Pool to User)
-            // On testnet, we mint the borrowed funds to the user so they can pay the escrow
-            const provider = new ethers.BrowserProvider(await wallet.getEthereumProvider());
+            const provider = new ethers.BrowserProvider((window as any).ethereum);
             const signer = await provider.getSigner();
             const usdc = new ethers.Contract(usdcAddress, ABIS.MockERC20, signer);
 
@@ -276,7 +276,7 @@ export default function CheckoutPage() {
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
                             <button
-                                onClick={authenticated ? handlePayment : login}
+                                onClick={authenticated ? handlePayment : () => connect("Nami")}
                                 disabled={paying || bill.status === 'paid'}
                                 className={`w-full py-4 rounded font-black text-xs uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 ${paying || bill.status === 'paid' ? 'bg-zinc-800 text-white/20 cursor-not-allowed' : 'bg-primary text-black hover:scale-[1.02] shadow-[0_0_20px_-5px_rgba(var(--primary),0.5)]'
                                     }`}

@@ -3,11 +3,11 @@
 import { Shield } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { usePrivy } from "@privy-io/react-auth"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 
 export function AppFooter() {
     const pathname = usePathname()
-    const { authenticated } = usePrivy()
+    const { connected: authenticated } = useObolusWallet()
 
     if (pathname === "/" && !authenticated) return null
     return (

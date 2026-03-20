@@ -3,7 +3,7 @@
 import { ConnectGate } from "@/components/connect-gate"
 import { useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
-import { usePrivy } from "@privy-io/react-auth"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 import {
   ShoppingBag,
   Tv,
@@ -25,8 +25,7 @@ import Link from "next/link"
 import { NETWORKS } from "@/lib/contracts"
 
 export default function TransactionsPage() {
-  const { user } = usePrivy()
-  const address = user?.wallet?.address
+  const { address } = useObolusWallet()
 
   const rawTransactions = useQuery(api.merchants.listTransactions, { userAddress: address }) ?? []
   const bills = useQuery(api.merchants.listBills, { userAddress: address }) ?? []

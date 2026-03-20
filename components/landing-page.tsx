@@ -1,10 +1,16 @@
 "use client"
 
-import { usePrivy } from "@privy-io/react-auth"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 import Link from "next/link"
 
 export function LandingPage() {
-    const { login } = usePrivy()
+    const { connect, connected: authenticated } = useObolusWallet()
+
+    const handleTerminalLaunch = () => {
+        if (!authenticated) {
+            connect("Nami");
+        }
+    }
 
     return (
         <div className="relative min-h-screen flex flex-col overflow-x-hidden -mt-24">
@@ -72,10 +78,10 @@ export function LandingPage() {
 
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <button
-                            onClick={() => login()}
+                            onClick={handleTerminalLaunch}
                             className="bg-primary text-black px-12 py-5 rounded-xl font-bold text-xl hover:brightness-110 transition-all neon-glow min-w-[280px] font-mono uppercase tracking-tighter"
                         >
-                            LAUNCH TERMINAL
+                            {authenticated ? 'TERMINAL_LINKED' : 'LAUNCH TERMINAL'}
                         </button>
                         <button className="bg-[#121a2a]/80 border border-slate-700 text-white px-12 py-5 rounded-xl font-bold text-xl hover:bg-[#121a2a] transition-all min-w-[280px] backdrop-blur-md font-mono uppercase tracking-tighter">
                             VIEW ECOSYSTEM

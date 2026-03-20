@@ -42,10 +42,8 @@ export function AppHeader() {
         {/* Left: menu icon + logo */}
         <div className="flex items-center gap-2">
           <SidebarDrawer open={open} onOpenChange={setOpen} />
-          <Link href="/" className="font-semibold tracking-wide">
-            <span className="inline-flex items-center gap-2">
-              <Image src="/logo.png" alt="Logo" width={120} height={32} className="h-8 w-auto" />
-            </span>
+          <Link href="/" className="font-bold tracking-tighter text-2xl text-primary font-display italic">
+            OBOLUS
           </Link>
         </div>
 

@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useObolus } from "@/hooks/use-obolus"
-import { usePrivy, useWallets } from "@privy-io/react-auth"
-import { Zap, ShieldCheck, Info, Loader2, AlertTriangle, CheckCircle2, FlaskConical } from "lucide-react"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
+import { Zap, ShieldCheck, Info, Loader2, AlertTriangle, CheckCircle2, FlaskConical, Wallet } from "lucide-react"
 import { toast } from "react-toastify"
 import { ethers } from "ethers"
 import { ABIS } from "@/lib/contracts"
@@ -21,9 +21,7 @@ export default function DebugBNPLPage() {
         loading: obolusLoading
     } = useObolus()
 
-    const { login } = usePrivy()
-    const { wallets } = useWallets()
-    const wallet = wallets[0]
+    const { connect } = useObolusWallet()
 
     const [score, setScore] = useState<string>("...")
     const [limit, setLimit] = useState<string>("...")
@@ -47,14 +45,17 @@ export default function DebugBNPLPage() {
             const l = await getCreditLimit()
             const c = await getUserTotalCollateral()
 
-            const { config, id } = getMasterConfig() as any
+            const { config } = getMasterConfig() as any
             const lp = await getLPBalance(config.USDC)
 
-            // Fetch debt directly for debug
-            const provider = new ethers.BrowserProvider(await (wallet as any).getEthereumProvider())
-            const loanEngine = new ethers.Contract(config.LOAN_ENGINE, ABIS.LoanEngine, provider)
-            const activeDebtRaw = await loanEngine.userActiveDebt(address)
-            const activeDebtVal = ethers.formatUnits(activeDebtRaw, 18)
+            // EVM Fallback for debt checking
+            let activeDebtVal = "0.00";
+            if ((window as any).ethereum) {
+                const provider = new ethers.BrowserProvider((window as any).ethereum)
+                const loanEngine = new ethers.Contract(config.LOAN_ENGINE, ABIS.LoanEngine, provider)
+                const activeDebtRaw = await loanEngine.userActiveDebt(address)
+                activeDebtVal = ethers.formatUnits(activeDebtRaw, 18)
+            }
 
             setScore(s)
             setLimit(l)
@@ -122,8 +123,10 @@ export default function DebugBNPLPage() {
             const { config } = getMasterConfig() as any
             const usdcAddress = config.USDC
 
+            if (!(window as any).ethereum) throw new Error("Metamask/EVM wallet required for Hub minting");
+
             addLog("1. Minting 1000 Mock USDC on Hub...")
-            const provider = new ethers.BrowserProvider(await (wallet as any).getEthereumProvider())
+            const provider = new ethers.BrowserProvider((window as any).ethereum)
             const signer = await provider.getSigner()
             const usdc = new ethers.Contract(usdcAddress, ABIS.MockERC20, signer)
 
@@ -155,7 +158,9 @@ export default function DebugBNPLPage() {
                             <span className="text-[10px] font-bold text-teal-400">{address?.slice(0, 10)}...</span>
                         </div>
                     ) : (
-                        <button onClick={login} className="bg-white text-black px-6 py-2 font-bold uppercase text-xs">Connect Wallet</button>
+                        <button onClick={() => connect("Nami")} className="bg-white text-black px-6 py-2 font-bold uppercase text-xs flex items-center gap-2">
+                            <Wallet className="w-3 h-3" /> Connect_Nami
+                        </button>
                     )}
                 </header>
 

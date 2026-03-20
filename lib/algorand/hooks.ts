@@ -2,13 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePrivy } from '@privy-io/react-auth';
+import { useObolusWallet } from '@/lib/hooks/useObolusWallet';
 import { PayEaseContracts, ContractStatus } from './contracts';
 
 // Hook for user registration
 export function useUserRegistration() {
-  const { authenticated, user } = usePrivy();
-  const activeAddress = user?.wallet?.address;
+  const { connected: authenticated, address: activeAddress } = useObolusWallet();
   const [isRegistering, setIsRegistering] = useState(false);
   const [registrationStatus, setRegistrationStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -38,8 +37,7 @@ export function useUserRegistration() {
 
 // Hook for user credit limit
 export function useUserLimit() {
-  const { authenticated, user } = usePrivy();
-  const activeAddress = user?.wallet?.address;
+  const { connected: authenticated, address: activeAddress } = useObolusWallet();
   const [limit, setLimit] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -72,8 +70,7 @@ export function useUserLimit() {
 
 // Hook for piggy bank operations
 export function usePiggyBank() {
-  const { authenticated, user } = usePrivy();
-  const activeAddress = user?.wallet?.address;
+  const { connected: authenticated, address: activeAddress } = useObolusWallet();
   const [balance, setBalance] = useState(0);
   const [isDepositing, setIsDepositing] = useState(false);
 
@@ -102,8 +99,7 @@ export function usePiggyBank() {
 
 // Hook for payment processing
 export function usePayments() {
-  const { authenticated, user } = usePrivy();
-  const activeAddress = user?.wallet?.address;
+  const { connected: authenticated, address: activeAddress } = useObolusWallet();
   const [isProcessing, setIsProcessing] = useState(false);
 
   const processPayment = async (
@@ -175,8 +171,7 @@ export function useContractConnection() {
 
 // Hook for user verification
 export function useVerification() {
-  const { authenticated, user } = usePrivy();
-  const activeAddress = user?.wallet?.address;
+  const { connected: authenticated, address: activeAddress } = useObolusWallet();
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifications, setVerifications] = useState<string[]>([]);
 

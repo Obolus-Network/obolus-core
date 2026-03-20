@@ -1,6 +1,5 @@
 "use client"
 import { useState, useEffect } from "react"
-import { usePrivy, useWallets } from "@privy-io/react-auth"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { CONTRACTS, NETWORKS } from "@/lib/contracts"
@@ -10,12 +9,12 @@ import { ConnectGate } from "@/components/connect-gate"
 import { CryptoIcon } from '@ledgerhq/crypto-icons'
 import { Skeleton } from "@/components/ui/skeleton"
 import { toast } from "react-toastify"
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet"
 import { useQuery, useMutation } from "convex/react"
 import { api } from "@/convex/_generated/api"
 
 export default function FaucetPage() {
-    const { authenticated } = usePrivy()
-    const { wallets } = useWallets()
+    const { connected: authenticated, address } = useObolusWallet()
     const { getTokenBalance } = useObolus()
     const [network, setNetwork] = useState<string>("SEPOLIA")
     const [token, setToken] = useState<string>("USDC")
@@ -38,11 +37,11 @@ export default function FaucetPage() {
         BNB: { ledgerId: "binance_smart_chain", color: "yellow", name: "Binance Coin" }
     };
 
-    const wallet = wallets[0]
+    const walletAddress = address
 
     // Convex Data
     const dbBalances = useQuery(api.merchants.getUserBalances,
-        wallet?.address ? { userAddress: wallet.address, network } : "skip"
+        address ? { userAddress: address, network } : "skip"
     );
     const updateDbBalance = useMutation(api.merchants.updateBalance);
 
@@ -58,7 +57,7 @@ export default function FaucetPage() {
     }, [dbBalances]);
 
     const fetchBalances = async () => {
-        if (!wallet || !authenticated) return;
+        if (!address || !authenticated) return;
         setLoadingBalances(true);
         try {
             const netId = (NETWORKS as any)[network]?.id;
@@ -74,7 +73,7 @@ export default function FaucetPage() {
 
                             // 1. Update DB (Convex will then update dbBalances query)
                             await updateDbBalance({
-                                userAddress: wallet.address,
+                                userAddress: address,
                                 network: network,
                                 symbol: symbol,
                                 balance: balanceNum
@@ -100,10 +99,10 @@ export default function FaucetPage() {
 
     useEffect(() => {
         fetchBalances();
-    }, [network, authenticated, wallet]);
+    }, [network, authenticated, address]);
 
     const handleMint = async () => {
-        if (!wallet) return
+        if (!address) return
         setStatus("loading")
         setErrorMsg("")
         setTxHash("")
@@ -115,7 +114,7 @@ export default function FaucetPage() {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    address: wallet.address,
+                    address: address,
                     token: token,
                     network: network,
                     amount: amount
@@ -335,7 +334,7 @@ export default function FaucetPage() {
                                     </div>
                                     <div className="flex flex-col gap-1 text-right">
                                         <span className="text-[9px] text-white/40 uppercase font-bold tracking-widest">Auth_Provider</span>
-                                        <span className="text-[10px] text-white/60 font-bold">PRIVY_INTERNAL</span>
+                                        <span className="text-[10px] text-white/60 font-bold">CARDANO_MESH</span>
                                     </div>
                                 </div>
 
