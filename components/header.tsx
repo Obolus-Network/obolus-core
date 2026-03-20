@@ -11,6 +11,7 @@ import { ConnectWalletButton } from "@/components/wallet/connect-wallet-button"
 const NAV = [
   { href: "/pools", label: "Pools" },
   { href: "/vaults", label: "Vaults" },
+  { href: "/credit", label: "Credit" },
   { href: "/merchants", label: "Shop" },
   { href: "/limits", label: "Limits" },
   { href: "https://docs.0rca.network", label: "Docs" },
