@@ -1,31 +1,23 @@
-import { useWallet } from "@meshsdk/react";
-import { useState, useEffect } from "react";
+import { useWallet, useAddress, useLovelace, useNetwork } from "@meshsdk/react";
 
 export function useObolusWallet() {
-  const { connected, wallet, connect, disconnect } = useWallet();
-  const [address, setAddress] = useState<string>("");
-  const [balance, setBalance] = useState<string>("0");
-  const [networkId, setNetworkId] = useState<number | null>(null);
+  const { connected, connecting, connect, disconnect } = useWallet();
+  const address = useAddress();
+  const lovelace = useLovelace();
+  const networkId = useNetwork();
 
-  useEffect(() => {
-    if (connected && wallet) {
-      wallet.getChangeAddress().then(setAddress);
-      wallet.getLovelace().then((l) =>
-        setBalance((parseInt(l) / 1_000_000).toFixed(2))
-      );
-      wallet.getNetworkId().then(setNetworkId);
-    }
-  }, [connected, wallet]);
+  const balance = lovelace ? (parseInt(lovelace) / 1_000_000).toFixed(2) : "0";
 
-  const truncateAddress = (addr: string) =>
+  const truncateAddress = (addr: string | undefined) =>
     addr ? addr.slice(0, 12) + "..." + addr.slice(-6) : "";
 
   return {
     connected,
-    address,
+    connecting,
+    address: address || "",
     truncatedAddress: truncateAddress(address),
     balance,
-    networkId,
+    networkId: networkId ?? null,
     isTestnet: networkId === 0,
     connect,
     disconnect,

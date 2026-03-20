@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { SidebarDrawer } from "./sidebar-drawer"
@@ -14,7 +13,7 @@ const NAV = [
   { href: "/vaults", label: "Vaults" },
   { href: "/merchants", label: "Shop" },
   { href: "/limits", label: "Limits" },
-  { href: "/docs", label: "Docs" },
+  { href: "https://docs.0rca.network", label: "Docs" },
   { href: "/transactions", label: "Transactions" },
   { href: "/faucet", label: "Faucet" },
 ]
@@ -42,8 +41,10 @@ export function AppHeader() {
         {/* Left: menu icon + logo */}
         <div className="flex items-center gap-2">
           <SidebarDrawer open={open} onOpenChange={setOpen} />
-          <Link href="/" className="font-bold tracking-tighter text-2xl text-primary font-display italic">
-            OBOLUS
+          <Link href="/" className="font-semibold tracking-wide">
+            <span className="inline-flex items-center gap-2">
+              <Image src="/logo.png" alt="Logo" width={120} height={32} className="h-8 w-auto max-h-8" />
+            </span>
           </Link>
         </div>
 
@@ -73,8 +74,3 @@ export function AppHeader() {
     </header>
   )
 }
-
-function shortAddress(a: string) {
-  return a.length > 10 ? `${a.slice(0, 6)}…${a.slice(-4)}` : a
-}
-

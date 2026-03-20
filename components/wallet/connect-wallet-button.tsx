@@ -1,44 +1,26 @@
 "use client";
 
-import { useWallet, useWalletList } from "@meshsdk/react";
+import { useWalletList } from "@meshsdk/react";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useObolusWallet } from "@/lib/hooks/useObolusWallet";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Wallet, ShieldAlert, Copy, ExternalLink } from "lucide-react";
+import { LogOut, ShieldAlert, Copy } from "lucide-react";
 import { toast } from "react-toastify";
 
 export function ConnectWalletButton() {
-  const { connected, wallet, connect, disconnect, name, error } = useWallet();
+  const { connected, address, truncatedAddress, balance, networkId, connect, disconnect } = useObolusWallet();
   const wallets = useWalletList();
-  const [address, setAddress] = useState("");
-  const [networkId, setNetworkId] = useState<number | null>(null);
-  const [balance, setBalance] = useState("0");
-
-  useEffect(() => {
-    if (connected && wallet) {
-      wallet.getChangeAddress().then(setAddress);
-      wallet.getNetworkId().then(setNetworkId);
-      wallet.getLovelace().then((l) =>
-        setBalance((parseInt(l) / 1_000_000).toFixed(2))
-      );
-    } else {
-      setAddress("");
-      setNetworkId(null);
-      setBalance("0");
-    }
-  }, [connected, wallet]);
-
-  const truncateAddress = (addr: string) =>
-    addr ? `${addr.slice(0, 8)}...${addr.slice(-6)}` : "";
 
   const copyAddress = () => {
-    navigator.clipboard.writeText(address);
-    toast.success("Address copied to clipboard!");
+    if (address) {
+      navigator.clipboard.writeText(address);
+      toast.success("Address copied to clipboard!");
+    }
   };
 
   const isWrongNetwork = networkId !== 0; // 0 for Preprod
@@ -62,7 +44,7 @@ export function ConnectWalletButton() {
             wallets.map((w) => (
               <DropdownMenuItem
                 key={w.name}
-                onClick={() => connect(w.name)}
+                onClick={() => connect(w.name, true)}
                 className="flex items-center justify-between py-3 px-3 cursor-pointer hover:bg-white/5 focus:bg-primary/10 text-[10px] uppercase font-bold tracking-tighter group"
               >
                 <div className="flex items-center gap-3">
@@ -89,7 +71,7 @@ export function ConnectWalletButton() {
         <div className="flex flex-col items-end gap-1 cursor-pointer group">
           <div className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-1.5 rounded-sm font-mono text-[10px] font-black tracking-tight transition-all active:scale-95 shadow-[0_0_15px_rgba(166,242,74,0.2)]">
             <span className="size-1.5 bg-primary-foreground rounded-full animate-pulse" />
-            {truncateAddress(address)}
+            {truncatedAddress}
           </div>
           {isWrongNetwork && (
             <span className="text-[7px] text-amber-400 font-bold uppercase tracking-widest animate-pulse flex items-center gap-1">
@@ -106,7 +88,7 @@ export function ConnectWalletButton() {
                     <Copy className="size-3" />
                 </button>
             </div>
-          <span className="text-[8px] text-white/40 uppercase tracking-widest font-bold">Active_Session // {name.toUpperCase()}</span>
+          <span className="text-[8px] text-white/40 uppercase tracking-widest font-bold">Active_Session</span>
           <span className="text-[10px] font-bold break-all text-primary/80 pr-6">{address}</span>
         </div>
         

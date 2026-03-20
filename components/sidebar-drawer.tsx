@@ -23,7 +23,7 @@ const NAV_ITEMS = [
   { href: "/pools", label: "PIGGY BANK", icon: PiggyBank },
   { href: "/merchants", label: "SHOP", icon: ShoppingBag },
   { href: "/limits", label: "LIMITS", icon: Gauge },
-  { href: "/docs", label: "DOCS", icon: FileText },
+  { href: "https://docs.0rca.network", label: "DOCS", icon: FileText },
   { href: "/transactions", label: "TRANSACTIONS", icon: History },
 ]
 
@@ -45,8 +45,7 @@ export function SidebarDrawer({ open, onOpenChange }: { open?: boolean; onOpenCh
         <SheetHeader className="p-6 pb-2">
           <SheetTitle className="sr-only">Menu</SheetTitle>
           <div className="flex items-center gap-2">
-            {/* Using a placeholder if logo.png doesn't exist, but keeping the img tag for now */}
-            <NextImage src="/logo.png" alt="Logo" width={120} height={32} className="h-8 w-auto" />
+            <NextImage src="/logo.png" alt="Logo" width={120} height={32} className="h-8 w-auto text-primary" />
           </div>
         </SheetHeader>
 
@@ -76,7 +75,7 @@ export function SidebarDrawer({ open, onOpenChange }: { open?: boolean; onOpenCh
           <div className="flex items-center justify-between px-2">
             <div className="flex items-center gap-2">
               <span className="size-1.5 bg-primary rounded-full neon-glow animate-pulse"></span>
-              <span className="text-[9px] font-bold text-white/40 tracking-widest">MAINNET ONLINE</span>
+              <span className="text-[9px] font-bold text-white/40 tracking-widest">NETWORK ONLINE</span>
             </div>
             <span className="text-[9px] font-bold text-primary/60">24ms</span>
           </div>

@@ -22,7 +22,7 @@ export default function Page() {
   const { connected: authenticated, address } = useObolusWallet()
 
   const { getCreditLimit, getLoans, loading: obolusLoading } = useObolus()
-  const transactions = useQuery(api.merchants.listTransactions, { userAddress: address }) ?? []
+  const transactions = useQuery(api.merchants.listTransactions, { userAddress: address || "" }) ?? []
 
   const [realStats, setRealStats] = useState({
     limit: 200,
@@ -34,7 +34,7 @@ export default function Page() {
   })
 
   useEffect(() => {
-    if (authenticated) {
+    if (authenticated && address) {
       const updateStats = async () => {
         try {
           const limit = await getCreditLimit()
@@ -182,7 +182,7 @@ export default function Page() {
       <div className="lg:col-span-4 space-y-6">
         <div className="bg-card/20 border border-border/40 rounded-2xl p-6 backdrop-blur-sm space-y-4">
           <div className="text-[10px] text-foreground/50 uppercase tracking-widest mb-2">Quick Actions</div>
-          <Link href="/checkout" className="block">
+          <Link href="/merchants" className="block">
             <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-6 rounded-xl flex items-center justify-center gap-3 group">
               <Zap className="w-5 h-5 fill-current group-hover:scale-110 transition-transform" />
               <span>EXECUTE_PAYMENT</span>

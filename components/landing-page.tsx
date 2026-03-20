@@ -8,7 +8,7 @@ export function LandingPage() {
 
     const handleTerminalLaunch = () => {
         if (!authenticated) {
-            connect("Nami");
+            connect("Nami", true);
         }
     }
 
@@ -24,7 +24,7 @@ export function LandingPage() {
                             <path d="M 500, 500 m -400, 0 a 400,400 0 1,1 800,0 a 400,400 0 1,1 -800,0" fill="transparent" id="circlePath"></path>
                             <text className="text-ring">
                                 <textPath xlinkHref="#circlePath">
-                                    YOUR CTC IS NOW YOUR CREDIT CARD • YOUR CTC IS NOW YOUR CREDIT CARD •
+                                    YOUR ADA IS NOW YOUR CREDIT CARD • YOUR ADA IS NOW YOUR CREDIT CARD •
                                 </textPath>
                             </text>
                         </svg>
@@ -55,10 +55,10 @@ export function LandingPage() {
                             OBOLUS PROTOCOL
                         </h1>
                         <p className="text-slate-200 font-mono text-lg tracking-widest uppercase max-w-3xl mx-auto mb-4">
-                            Which provides BNPL and makes your CTC work for you.
+                            Which provides BNPL and makes your ADA work for you.
                         </p>
                         <p className="text-slate-400 font-mono text-sm tracking-widest uppercase max-w-2xl mx-auto">
-                            Don't let your CTC (Creditcoin) sleep in your wallet. Activate a BNPL account now.
+                            Don't let your ADA sleep in your wallet. Activate a BNPL account now.
                         </p>
                     </div>
 
@@ -130,13 +130,13 @@ export function LandingPage() {
                     <div className="marquee-content flex gap-20 items-center">
                         <div className="flex gap-8 items-center">
                             <span className="text-primary font-mono text-base font-bold tracking-[0.3em] uppercase">OBOLUS NETWORK STATUS:</span>
-                            <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">STAKED_ETH: 4,200.54</span>
-                            <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">STAKED_SOL: 85,120.33</span>
+                            <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">STAKED_ADA: 4,200,540</span>
+                            <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">STAKED_USD: 85,120.33</span>
                             <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">TOTAL_CREDIT_ISSUED: $2,450,192.00</span>
                             <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">ACTIVE_STAKERS: 12,402</span>
                             <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">CORE_SYNC_HEALTH: 100%</span>
                             <span className="text-primary font-mono text-base font-bold tracking-[0.3em] uppercase ml-20">OBOLUS NETWORK STATUS:</span>
-                            <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">STAKED_ETH: 4,200.54</span>
+                            <span className="text-white/60 font-mono text-sm uppercase tracking-tighter whitespace-nowrap">STAKED_ADA: 4,200,540</span>
                         </div>
                     </div>
                 </div>

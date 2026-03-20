@@ -19,7 +19,7 @@ export function AppFooter() {
                 </div>
                 <div className="text-[10px] flex items-center gap-1 font-bold uppercase tracking-[0.2em]">
                     <Shield className="w-3 h-3" />
-                    VAULT_SECURE_L3
+                    VAULT_SECURE_C1
                 </div>
             </div>
             <div className="flex gap-6">
