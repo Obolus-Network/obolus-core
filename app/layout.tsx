@@ -8,7 +8,8 @@ import { AppHeader } from "@/components/header"
 import { AppFooter } from "@/components/footer"
 import { Providers } from "@/components/providers"
 import { Suspense } from "react"
-import Head from "next/head"
+import { MeshProvider } from "@meshsdk/react"
+import "@meshsdk/react/styles.css"
 
 export const viewport = {
   width: "device-width",
@@ -70,11 +71,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body className={`font-mono ${GeistSans.variable} ${GeistMono.variable} antialiased min-h-dvh bg-background`}>
         <Suspense fallback={<div>Loading...</div>}>
           <Providers>
-            <div className="mx-auto w-full flex flex-col min-h-screen px-4 md:px-8 lg:px-12">
-              <AppHeader />
-              <main className="pb-24 flex-grow">{children}</main>
-              <AppFooter />
-            </div>
+            <MeshProvider>
+              <div className="mx-auto w-full flex flex-col min-h-screen px-4 md:px-8 lg:px-12">
+                <AppHeader />
+                <main className="pb-24 flex-grow">{children}</main>
+                <AppFooter />
+              </div>
+            </MeshProvider>
           </Providers>
         </Suspense>
         <Analytics />
@@ -82,5 +85,3 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     </html>
   )
 }
-
-

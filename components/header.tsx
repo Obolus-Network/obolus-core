@@ -5,14 +5,13 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
-import { usePrivy } from "@privy-io/react-auth"
 import { SidebarDrawer } from "./sidebar-drawer"
 import { cn } from "@/lib/utils"
 import { ConnectWalletButton } from "@/components/wallet/connect-wallet-button"
-import { LogOut } from "lucide-react"
 
 const NAV = [
   { href: "/pools", label: "Pools" },
+  { href: "/vaults", label: "Vaults" },
   { href: "/merchants", label: "Shop" },
   { href: "/limits", label: "Limits" },
   { href: "/docs", label: "Docs" },
@@ -22,10 +21,7 @@ const NAV = [
 
 export function AppHeader() {
   const pathname = usePathname()
-  const { authenticated, user, logout } = usePrivy()
   const [open, setOpen] = useState(false)
-
-  const activeAccount = user?.wallet
 
   useEffect(() => {
     // Auto-open refer popup once per session
@@ -73,24 +69,7 @@ export function AppHeader() {
 
         {/* Right: wallet actions */}
         <div className="flex items-center justify-end gap-3 min-w-0">
-          {authenticated && activeAccount ? (
-            <>
-              <span className="hidden sm:inline text-xs bg-primary/15 px-3 py-1.5 rounded-full font-mono whitespace-nowrap">
-                {shortAddress(activeAccount.address)}
-              </span>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="rounded-full whitespace-nowrap"
-                onClick={() => logout()}
-              >
-                <LogOut className="h-4 w-4 mr-1" />
-                Disconnect
-              </Button>
-            </>
-          ) : (
-            <ConnectWalletButton />
-          )}
+          <ConnectWalletButton />
         </div>
       </div>
     </header>

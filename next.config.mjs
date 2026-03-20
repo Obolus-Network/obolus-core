@@ -1,3 +1,6 @@
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -30,7 +33,20 @@ const nextConfig = {
         hostname: 'upload.wikimedia.org' },
     ],
   },
+
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      os: false,
+      path: false,
+      crypto: false,
+      buffer: require.resolve("buffer"),
+    };
+    return config;
+  },
+
+  serverExternalPackages: ['@meshsdk/core'],
 }
 
 export default nextConfig
-
